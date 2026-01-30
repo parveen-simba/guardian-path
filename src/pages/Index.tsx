@@ -5,7 +5,9 @@ import {
   CheckCircle, 
   Users,
   Activity,
-  Zap
+  Zap,
+  Fingerprint,
+  Brain
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { StatCard } from '@/components/StatCard';
@@ -13,6 +15,9 @@ import { AlertPanel } from '@/components/AlertPanel';
 import { ActivityTable } from '@/components/ActivityTable';
 import { SecurityCharts } from '@/components/SecurityCharts';
 import { LocationMap } from '@/components/LocationMap';
+import { DeviceFingerprintPanel } from '@/components/DeviceFingerprintPanel';
+import { BehaviorAnalysisPanel } from '@/components/BehaviorAnalysisPanel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   generateLoginLogs, 
   analyzeAllLogs, 
@@ -111,26 +116,88 @@ const Index = () => {
           />
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Activity Table - Takes 2 columns */}
-          <div className="lg:col-span-2">
-            <ActivityTable data={analyses} />
-          </div>
-          
-          {/* Alerts Panel */}
-          <div className="lg:col-span-1">
-            <AlertPanel alerts={analyses.filter(a => a.status !== 'safe')} />
-          </div>
-        </div>
+        {/* Main Content with Tabs */}
+        <Tabs defaultValue="overview" className="mb-8">
+          <TabsList className="mb-6">
+            <TabsTrigger value="overview" className="gap-2">
+              <Activity className="w-4 h-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="behavior" className="gap-2">
+              <Brain className="w-4 h-4" />
+              Behavior Analysis
+            </TabsTrigger>
+            <TabsTrigger value="fingerprint" className="gap-2">
+              <Fingerprint className="w-4 h-4" />
+              Device Fingerprint
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Charts Row */}
-        <SecurityCharts analyses={analyses} logs={logs} />
+          <TabsContent value="overview">
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Activity Table - Takes 2 columns */}
+              <div className="lg:col-span-2">
+                <ActivityTable data={analyses} />
+              </div>
+              
+              {/* Alerts Panel */}
+              <div className="lg:col-span-1">
+                <AlertPanel alerts={analyses.filter(a => a.status !== 'safe')} />
+              </div>
+            </div>
 
-        {/* Location Map */}
-        <div className="mt-8">
-          <LocationMap analyses={analyses} />
-        </div>
+            {/* Charts Row */}
+            <SecurityCharts analyses={analyses} logs={logs} />
+
+            {/* Location Map */}
+            <div className="mt-8">
+              <LocationMap analyses={analyses} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="behavior">
+            <BehaviorAnalysisPanel logs={logs} />
+          </TabsContent>
+
+          <TabsContent value="fingerprint">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DeviceFingerprintPanel />
+              <div className="glass-card rounded-xl border border-border/50 p-6">
+                <h3 className="font-semibold flex items-center gap-2 mb-4">
+                  <Shield className="w-5 h-5 text-primary" />
+                  How Device Fingerprinting Works
+                </h3>
+                <div className="space-y-4 text-sm text-muted-foreground">
+                  <p>
+                    Device fingerprinting creates a unique identifier for each device accessing the system 
+                    by collecting various browser and hardware characteristics.
+                  </p>
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-foreground">Collected Data Points:</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Screen resolution & color depth</li>
+                      <li>Browser plugins & language settings</li>
+                      <li>Timezone & platform information</li>
+                      <li>Canvas & WebGL rendering signatures</li>
+                      <li>Hardware concurrency (CPU cores)</li>
+                      <li>Touch support & input methods</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-foreground">Risk Detection:</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Automated browser detection (bots)</li>
+                      <li>Privacy mode/incognito indicators</li>
+                      <li>VPN/proxy usage patterns</li>
+                      <li>Device spoofing attempts</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {/* Footer Info */}
         <footer className="mt-12 pt-6 border-t border-border/50">
@@ -140,7 +207,7 @@ const Index = () => {
               <span>Hospital Sentinel — Cyber-Physical Security Platform</span>
             </div>
             <div className="flex items-center gap-4 font-mono text-xs">
-              <span>Detection Engine v2.0.1</span>
+              <span>Detection Engine v2.1.0</span>
               <span>•</span>
               <span>Last Scan: {new Date().toLocaleTimeString()}</span>
               <span>•</span>
