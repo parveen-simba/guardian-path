@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Activity, Settings, RefreshCw } from 'lucide-react';
+import { Shield, Activity, Settings, RefreshCw, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { NotificationCenter } from '@/components/NotificationCenter';
@@ -69,6 +69,12 @@ export function Header({ onRefresh, isRefreshing, alertCount }: HeaderProps) {
             </Button>
             
             <NotificationCenter onAlertCountChange={setWsAlertCount} />
+            
+            <Link to="/staff">
+              <Button variant="ghost" size="icon">
+                <Users className="w-5 h-5" />
+              </Button>
+            </Link>
             
             <Link to="/admin">
               <Button variant="ghost" size="icon">
