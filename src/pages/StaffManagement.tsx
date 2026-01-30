@@ -634,7 +634,7 @@ const StaffManagement = () => {
           </DialogHeader>
           <div className="py-6 text-center text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
-            <p>Enable Lovable Cloud to add and persist new staff members.</p>
+            <p>Enable to add and persist new staff members.</p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
