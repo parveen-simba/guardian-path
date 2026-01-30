@@ -9,7 +9,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, MapPin, Clock, Gauge } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, MapPin, Clock, Gauge, Download, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
+import { toast } from 'sonner';
 
 interface ActivityTableProps {
   data: TravelAnalysis[];
@@ -23,6 +26,32 @@ export function ActivityTable({ data }: ActivityTableProps) {
       second: '2-digit',
       hour12: false 
     });
+  };
+
+  const handleExportCSV = () => {
+    try {
+      exportToCSV(data, 'hospital-sentinel-logs');
+      toast.success('CSV exported successfully', {
+        description: `${data.length} records exported`
+      });
+    } catch (error) {
+      toast.error('Export failed', {
+        description: 'Unable to export CSV file'
+      });
+    }
+  };
+
+  const handleExportPDF = () => {
+    try {
+      exportToPDF(data, 'hospital-sentinel-report');
+      toast.success('PDF report generated', {
+        description: `${data.length} records included`
+      });
+    } catch (error) {
+      toast.error('Export failed', {
+        description: 'Unable to generate PDF report'
+      });
+    }
   };
 
   const getStatusBadge = (status: string, riskScore: number) => {
@@ -56,11 +85,31 @@ export function ActivityTable({ data }: ActivityTableProps) {
 
   return (
     <div className="glass-card rounded-xl border border-border/50 overflow-hidden">
-      <div className="p-4 border-b border-border/50">
+      <div className="p-4 border-b border-border/50 flex items-center justify-between">
         <h3 className="font-semibold flex items-center gap-2">
           <MapPin className="w-5 h-5 text-primary" />
           Travel Analysis Log
         </h3>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            className="gap-2 text-xs"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            CSV
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPDF}
+            className="gap-2 text-xs"
+          >
+            <FileText className="w-4 h-4" />
+            PDF
+          </Button>
+        </div>
       </div>
       
       <div className="overflow-x-auto">
